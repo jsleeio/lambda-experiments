@@ -1,0 +1,11 @@
+### FIXME: rearrange build to emit a parallel build step for each function
+###        directory
+
+steps:
+  - label: ":docker: build"
+    command: 'ci-scripts/build.sh'
+    agents:
+      queue: 'ecr'
+    plugins:
+      - ecr#v2.3.0:
+          login: true
