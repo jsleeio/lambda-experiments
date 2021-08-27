@@ -5,7 +5,7 @@ steps:
   - label: ":docker: build"
     command: 'ci-scripts/build.sh'
     agents:
-      queue: 'ecr'
+      queue: 'iac'
     plugins:
       - ecr#v2.3.0:
           login: true
