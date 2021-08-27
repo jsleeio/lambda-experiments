@@ -4,22 +4,25 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-// Event is used to unmarshal the Lambda event context
-type Event struct {
-	Name string `json:"name"`
-}
-
-// Response represents the Response object
-type Response struct {
-	Message string `json:"Message"`
-}
-
 // HandleRequest handles a single request from the Lambda runtime
-func HandleRequest(ctx context.Context, name Event) (Response, error) {
-	return Response{Message: fmt.Sprintf("%s! hi m8", name.Name)}, nil
+func HandleRequest(ctx context.Context, event events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	headers := make(map[string]string)
+	headers["Content-type"] = "text/plain"
+	name, ok := event.QueryStringParameters["name"]
+	if !ok {
+		return events.APIGatewayV2HTTPResponse{
+			Headers:    headers,
+			StatusCode: 400,
+			Body:       "GTFO"}, nil
+	}
+	return events.APIGatewayV2HTTPResponse{
+		StatusCode: 200,
+		Body:       fmt.Sprintf("%s! hi m8", name),
+		Headers:    headers}, nil
 }
 
 func main() {
